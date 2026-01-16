@@ -1,213 +1,249 @@
-const STORAGE_KEY = "lf_items_v1";
+/* SISTC Lost & Found — Demo-only (LocalStorage) */
+const STORE_KEY = "sistc_lf_reports_v1";
 
-function seedIfEmpty() {
-  const existing = loadItems();
-  if (existing.length) return;
+function loadReports(){
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+  catch { return []; }
+}
 
-  const seed = [
+function saveReports(items){
+  localStorage.setItem(STORE_KEY, JSON.stringify(items));
+}
+
+function uid(){
+  return Math.random().toString(16).slice(2) + Date.now().toString(16);
+}
+
+function nowISO(){
+  const d = new Date();
+  return d.toISOString();
+}
+
+function fmtDate(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+  }catch{ return iso; }
+}
+
+function toast(msg){
+  const el = document.getElementById("toast");
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(()=> el.classList.remove("show"), 2600);
+}
+
+function setActiveNav(){
+  const page = document.body.dataset.page;
+  document.querySelectorAll(".navlinks a").forEach(a=>{
+    a.classList.toggle("active", a.dataset.page === page);
+  });
+}
+
+/* demo data */
+function seedIfEmpty(){
+  const items = loadReports();
+  if(items.length) return;
+
+  const demo = [
     {
-      id: crypto.randomUUID(),
+      id: uid(),
+      type: "lost",
+      itemName: "Purse",
+      category: "Accessories",
+      location: "Library",
+      date: "2026-01-12T02:10:00.000Z",
+      details: "Black purse with small gold chain.",
+      contactName: "Student",
+      contactEmail: "student@sistc.edu.au",
+      status: "open",
+      createdAt: nowISO()
+    },
+    {
+      id: uid(),
       type: "lost",
       itemName: "Black AirPods Case",
       category: "Electronics",
-      date: "2026-01-10",
-      location: "Library",
-      description: "Small black AirPods case. No keychain.",
-      contactName: "Student Support",
-      contactEmail: "support@example.com",
-      createdAt: Date.now()
+      location: "Cafeteria",
+      date: "2026-01-13T05:20:00.000Z",
+      details: "Small case, no AirPods inside.",
+      contactName: "Student",
+      contactEmail: "student@sistc.edu.au",
+      status: "open",
+      createdAt: nowISO()
     },
     {
-      id: crypto.randomUUID(),
+      id: uid(),
       type: "found",
       itemName: "Blue Water Bottle",
-      category: "Personal",
-      date: "2026-01-12",
-      location: "Cafeteria",
-      description: "Blue bottle with sticker on side.",
+      category: "Accessories",
+      location: "Campus Walkway",
+      date: "2026-01-14T01:45:00.000Z",
+      details: "Blue bottle, slight scratches.",
       contactName: "Reception",
-      contactEmail: "reception@example.com",
-      createdAt: Date.now()
-    },
-    {
-      id: crypto.randomUUID(),
-      type: "lost",
-      itemName: "Student ID Card",
-      category: "Documents",
-      date: "2026-01-14",
-      location: "Bus Stop",
-      description: "ID card in clear sleeve.",
-      contactName: "Sarina",
-      contactEmail: "sarina@example.com",
-      createdAt: Date.now()
+      contactEmail: "reception@sistc.edu.au",
+      status: "held",
+      createdAt: nowISO()
     }
   ];
-  saveItems(seed);
+  saveReports(demo);
 }
 
-function loadItems() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  } catch {
-    return [];
-  }
+function resetDemo(){
+  localStorage.removeItem(STORE_KEY);
+  seedIfEmpty();
+  toast("Demo data reset.");
+  renderSearch();
+  renderRecent();
 }
 
-function saveItems(items) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+/* shared UI renderers */
+function statusTag(report){
+  if(report.type === "found") return `<span class="tag good">Found</span>`;
+  return `<span class="tag warn">Lost</span>`;
 }
 
-function addItem(item) {
-  const items = loadItems();
-  items.unshift(item);
-  saveItems(items);
+function safe(s=""){ return String(s || "").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
+
+function renderCard(report){
+  return `
+  <div class="item">
+    <div>
+      <h3>${safe(report.itemName)}</h3>
+      <p>${safe(report.details || "")}</p>
+      <div class="meta">
+        ${statusTag(report)}
+        <span class="tag">${safe(report.category || "General")}</span>
+        <span class="tag">${safe(report.location || "Unknown")}</span>
+        <span class="tag">${fmtDate(report.date || report.createdAt)}</span>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="search.html">View</a>
+    </div>
+  </div>`;
 }
 
-function toast(msg) {
-  const el = document.getElementById("toast");
-  if (!el) return alert(msg);
-  el.textContent = msg;
-  el.classList.add("show");
-  window.clearTimeout(window.__toastTimer);
-  window.__toastTimer = window.setTimeout(() => el.classList.remove("show"), 2800);
-}
+/* Home: recently added */
+function renderRecent(){
+  const el = document.getElementById("recentItems");
+  if(!el) return;
 
-function setActiveNav() {
-  const path = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-  document.querySelectorAll("nav a").forEach(a => {
-    const href = (a.getAttribute("href") || "").toLowerCase();
-    if (href === path) a.classList.add("active");
-  });
-}
+  const items = loadReports()
+    .sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 3);
 
-function prettyType(type){
-  return type === "lost" ? "Lost" : "Found";
-}
-
-function renderItems(containerId, items) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  if (!items.length) {
-    container.innerHTML = `<div class="notice"><div><strong>No results</strong><br><small>Try adjusting your search or filters.</small></div></div>`;
+  if(!items.length){
+    el.innerHTML = `<p class="help">No reports yet. Submit a report to see it here.</p>`;
     return;
   }
-
-  container.innerHTML = items.map(i => {
-    const badgeClass = i.type === "lost" ? "lost" : "found";
-    return `
-      <article class="item">
-        <span class="badge ${badgeClass}">
-          <span class="badge-dot"></span>${prettyType(i.type)}
-        </span>
-        <h3>${escapeHtml(i.itemName)}</h3>
-        <div class="meta">
-          <span>${escapeHtml(i.category || "General")}</span>
-          <span>•</span>
-          <span>${escapeHtml(i.location || "Unknown")}</span>
-          <span>•</span>
-          <span>${escapeHtml(i.date || "")}</span>
-        </div>
-        <p style="margin:10px 0 0; color: var(--muted); font-size: 14px;">
-          ${escapeHtml(i.description || "")}
-        </p>
-      </article>
-    `;
-  }).join("");
+  el.innerHTML = `<div class="list">${items.map(renderCard).join("")}</div>`;
 }
 
-function escapeHtml(str){
-  return String(str || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+/* Search page */
+function renderSearch(){
+  const listEl = document.getElementById("results");
+  if(!listEl) return;
+
+  const qEl = document.getElementById("q");
+  const typeEl = document.getElementById("type");
+  const catEl = document.getElementById("category");
+
+  const q = (qEl?.value || "").trim().toLowerCase();
+  const type = typeEl?.value || "all";
+  const cat = catEl?.value || "all";
+
+  let items = loadReports().slice();
+
+  if(type !== "all"){
+    items = items.filter(x => x.type === type);
+  }
+  if(cat !== "all"){
+    items = items.filter(x => (x.category || "").toLowerCase() === cat.toLowerCase());
+  }
+  if(q){
+    items = items.filter(x =>
+      (x.itemName || "").toLowerCase().includes(q) ||
+      (x.details || "").toLowerCase().includes(q) ||
+      (x.location || "").toLowerCase().includes(q)
+    );
+  }
+
+  items.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+
+  if(!items.length){
+    listEl.innerHTML = `<p class="help">No matching results. Try a different keyword or category.</p>`;
+    return;
+  }
+  listEl.innerHTML = `<div class="list">${items.map(renderCard).join("")}</div>`;
 }
 
-function initHome() {
-  seedIfEmpty();
-  const items = loadItems().slice(0, 6);
-  renderItems("recentItems", items);
+function bindSearch(){
+  const qEl = document.getElementById("q");
+  const typeEl = document.getElementById("type");
+  const catEl = document.getElementById("category");
+  [qEl, typeEl, catEl].forEach(el => el && el.addEventListener("input", renderSearch));
+  [typeEl, catEl].forEach(el => el && el.addEventListener("change", renderSearch));
+
+  const resetBtn = document.getElementById("resetDemo");
+  resetBtn && resetBtn.addEventListener("click", resetDemo);
 }
 
-function initForm(type) {
-  seedIfEmpty();
-  const form = document.getElementById("itemForm");
-  if (!form) return;
+/* Forms */
+function readForm(prefix){
+  const get = id => document.getElementById(`${prefix}-${id}`)?.value?.trim() || "";
+  return {
+    itemName: get("itemName"),
+    category: get("category"),
+    location: get("location"),
+    date: get("date"),
+    details: get("details"),
+    contactName: get("contactName"),
+    contactEmail: get("contactEmail"),
+  };
+}
 
-  form.addEventListener("submit", (e) => {
+function bindReportForm(type){
+  const form = document.getElementById("reportForm");
+  if(!form) return;
+
+  form.addEventListener("submit", (e)=>{
     e.preventDefault();
 
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    const required = ["itemName","category","date","location","description","contactName","contactEmail"];
-    const missing = required.filter(k => !String(data[k] || "").trim());
-    if (missing.length) {
-      toast("Please fill in all required fields.");
+    const data = readForm("r");
+    if(!data.itemName || !data.location || !data.date){
+      toast("Please fill Item name, Location, and Date.");
       return;
     }
 
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.contactEmail).trim());
-    if (!emailOk) {
-      toast("Please enter a valid email address.");
-      return;
-    }
-
-    addItem({
-      id: crypto.randomUUID(),
+    const report = {
+      id: uid(),
       type,
-      itemName: data.itemName.trim(),
-      category: data.category.trim(),
-      date: data.date,
-      location: data.location.trim(),
-      description: data.description.trim(),
-      contactName: data.contactName.trim(),
-      contactEmail: data.contactEmail.trim(),
-      createdAt: Date.now()
-    });
+      ...data,
+      status: type === "found" ? "held" : "open",
+      createdAt: nowISO()
+    };
 
+    const items = loadReports();
+    items.push(report);
+    saveReports(items);
+
+    toast("Submitted successfully.");
     form.reset();
-    toast("Submitted successfully. Added to search.");
+    setTimeout(()=> location.href = "search.html", 350);
   });
 }
 
-function initSearch() {
+/* Init */
+document.addEventListener("DOMContentLoaded", ()=>{
   seedIfEmpty();
-  const q = document.getElementById("q");
-  const type = document.getElementById("type");
-  const category = document.getElementById("category");
-
-  const doSearch = () => {
-    const query = (q?.value || "").trim().toLowerCase();
-    const t = (type?.value || "all");
-    const c = (category?.value || "all");
-
-    let items = loadItems();
-
-    if (t !== "all") items = items.filter(i => i.type === t);
-    if (c !== "all") items = items.filter(i => (i.category || "").toLowerCase() === c.toLowerCase());
-
-    if (query) {
-      items = items.filter(i => {
-        const hay = `${i.itemName} ${i.location} ${i.description} ${i.category}`.toLowerCase();
-        return hay.includes(query);
-      });
-    }
-
-    renderItems("results", items);
-  };
-
-  [q, type, category].forEach(el => el && el.addEventListener("input", doSearch));
-  doSearch();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
   setActiveNav();
 
-  const page = (document.body.dataset.page || "").toLowerCase();
-  if (page === "home") initHome();
-  if (page === "report-lost") initForm("lost");
-  if (page === "report-found") initForm("found");
-  if (page === "search") initSearch();
+  const page = document.body.dataset.page;
+  if(page === "home") renderRecent();
+  if(page === "search"){ bindSearch(); renderSearch(); }
+  if(page === "report-lost") bindReportForm("lost");
+  if(page === "report-found") bindReportForm("found");
 });
+
