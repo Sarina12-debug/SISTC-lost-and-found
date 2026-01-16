@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SISTC Lost and Found Management System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="home">
+<header>
+  <div class="container">
+    <div class="navbar">
+      <div class="brand">
+        <div class="brand-badge">SC</div>
+        <div>SISTC Lost &amp; Found</div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="report-lost.html">Report Lost</a>
+        <a href="report-found.html">Report Found</a>
+        <a href="search.html">Search</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="pagehead">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span>Lost &amp; Found</span>
+    </div>
+
+    <div class="banner">
+      <div class="banner-media"></div>
+      <div class="banner-inner">
+        <h1 class="banner-title">SISTC Lost and Found Management System</h1>
+        <p class="banner-sub">Report and search lost or found items quickly using a simple, minimal portal.</p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="report-lost.html">Report Lost</a>
+          <a class="btn btn-outline" href="report-found.html">Report Found</a>
+          <a class="btn btn-ghost" href="search.html">Search Items →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Recently added</h2>
+      <p>Quick snapshot of the latest reports.</p>
+    </div>
+    <div id="recentItems" class="items"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    © 2026 SISTC Lost and Found Management System
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

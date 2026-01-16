@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SISTC — Report Lost Item</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="report-lost">
+<header>
+  <div class="container">
+    <div class="navbar">
+      <div class="brand">
+        <div class="brand-badge">SC</div>
+        <div>SISTC Lost &amp; Found</div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="report-lost.html">Report Lost</a>
+        <a href="report-found.html">Report Found</a>
+        <a href="search.html">Search</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="pagehead">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="sep">›</span>
+      <span>Report Lost</span>
+    </div>
+
+    <div class="banner">
+      <div class="banner-media"></div>
+      <div class="banner-inner">
+        <h1 class="banner-title">Report a lost item</h1>
+        <p class="banner-sub">Fill in clear details so it’s easier to match and return.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card col-7">
+      <div class="section-head" style="border-bottom:none; margin-bottom: 8px; padding-bottom: 0;">
+        <h2>Lost item form</h2>
+        <p>All fields required</p>
+      </div>
+
+      <form id="itemForm" novalidate>
+        <div class="row two">
+          <div class="field">
+            <label for="itemName">Item name *</label>
+            <input id="itemName" name="itemName" placeholder="e.g., Black wallet" required />
+          </div>
+
+          <div class="field">
+            <label for="category">Category *</label>
+            <select id="category" name="category" required>
+              <option value="">Select</option>
+              <option>Electronics</option>
+              <option>Documents</option>
+              <option>Personal</option>
+              <option>Clothing</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row two">
+          <div class="field">
+            <label for="date">Date lost *</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+
+          <div class="field">
+            <label for="location">Last seen location *</label>
+            <input id="location" name="location" placeholder="e.g., Library / Classroom" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="description">Description *</label>
+          <textarea id="description" name="description" placeholder="Color, brand, any unique detail..." required></textarea>
+        </div>
+
+        <div class="row two">
+          <div class="field">
+            <label for="contactName">Your name *</label>
+            <input id="contactName" name="contactName" placeholder="Full name" required />
+          </div>
+
+          <div class="field">
+            <label for="contactEmail">Email *</label>
+            <input id="contactEmail" name="contactEmail" type="email" placeholder="name@example.com" required />
+          </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Submit report</button>
+        <a class="btn btn-ghost" href="search.html">Go to Search →</a>
+      </form>
+    </section>
+
+    <aside class="card col-5">
+      <div class="section-head" style="border-bottom:none; margin-bottom: 8px; padding-bottom: 0;">
+        <h2>Guidelines</h2>
+        <p>Write it clearly</p>
+      </div>
+
+      <ul style="margin: 0; padding-left: 18px; color: var(--muted);">
+        <li>Brand / model</li>
+        <li>Color</li>
+        <li>Unique marks (stickers, scratches)</li>
+        <li>Where and when you last saw it</li>
+      </ul>
+
+      <div style="height:14px"></div>
+
+      <div class="notice">
+        <div>
+          <strong>Privacy</strong><br />
+          <small>Use an email you check often.</small>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    © 2026 SISTC Lost and Found Management System • Report Lost
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
