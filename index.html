@@ -3,66 +3,117 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SISTC Lost and Found Management System</title>
+  <title>SISTC Lost & Found</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body data-page="home">
-<header>
-  <div class="container">
-    <div class="navbar">
-      <div class="brand">
-        <div class="brand-badge">SC</div>
-        <div>SISTC Lost &amp; Found</div>
-      </div>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="report-lost.html">Report Lost</a>
-        <a href="report-found.html">Report Found</a>
-        <a href="search.html">Search</a>
-      </nav>
-    </div>
-  </div>
-</header>
+  <div class="topbar">
+    <div class="container">
+      <div class="nav">
+        <div class="brand">
+          <div class="badge">SC</div>
+          <div>SISTC Lost &amp; Found</div>
+        </div>
 
-<main class="container">
-  <section class="pagehead">
-    <div class="breadcrumb">
-      <a href="index.html">Home</a>
-      <span class="sep">›</span>
-      <span>Lost &amp; Found</span>
-    </div>
-
-    <div class="banner">
-      <div class="banner-media"></div>
-      <div class="banner-inner">
-        <h1 class="banner-title">SISTC Lost and Found Management System</h1>
-        <p class="banner-sub">Report and search lost or found items quickly using a simple, minimal portal.</p>
-
-        <div class="actions">
-          <a class="btn btn-primary" href="report-lost.html">Report Lost</a>
-          <a class="btn btn-outline" href="report-found.html">Report Found</a>
-          <a class="btn btn-ghost" href="search.html">Search Items →</a>
+        <div class="navlinks">
+          <a href="index.html" data-page="home">Home</a>
+          <a href="report-lost.html" data-page="report-lost">Report Lost</a>
+          <a href="report-found.html" data-page="report-found">Report Found</a>
+          <a href="search.html" data-page="search">Search</a>
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <h2>Recently added</h2>
-      <p>Quick snapshot of the latest reports.</p>
-    </div>
-    <div id="recentItems" class="items"></div>
-  </section>
-</main>
-
-<footer>
-  <div class="container">
-    © 2026 SISTC Lost and Found Management System
   </div>
-</footer>
 
-<div id="toast" class="toast"></div>
-<script src="app.js"></script>
+  <main class="main">
+    <div class="container">
+      <div class="breadcrumb">Home</div>
+
+      <section class="hero">
+        <div class="hero-inner" style="--hero-image:url('images/campus-walk.jpg')">
+          <div class="hero-content">
+            <div class="kicker">Student support • Safe handover • Quick reporting</div>
+            <h1>SISTC Lost and Found Management System</h1>
+            <p>
+              Report lost items, register found items, and search listings in one clean place.
+              For urgent valuables, visit Reception.
+            </p>
+            <div class="hero-actions">
+              <a class="btn primary" href="report-lost.html">Report Lost</a>
+              <a class="btn" href="report-found.html">Report Found</a>
+              <a class="btn" href="search.html">Search Items</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="card">
+          <div class="card-h">
+            <h2>How it works</h2>
+            <small>Simple process</small>
+          </div>
+          <div class="card-b">
+            <div class="pills">
+              <span class="pill">1) Submit a report</span>
+              <span class="pill">2) Staff verify</span>
+              <span class="pill">3) Handover safely</span>
+            </div>
+            <hr class="sep" />
+            <p class="help">
+              Use clear descriptions (colour, brand, location). For ID cards, do not post full numbers.
+              Search regularly — some items are held only for a limited period.
+            </p>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-h">
+            <h2>Privacy note</h2>
+            <small>Do it properly</small>
+          </div>
+          <div class="card-b">
+            <p class="help">
+              Keep sensitive details private. If your item is a passport, wallet, or student ID,
+              contact Reception directly for verification.
+            </p>
+            <div class="hero" style="margin-top:14px;">
+              <div class="hero-inner" style="min-height:170px; padding:18px; --hero-image:url('images/library.jpg')">
+                <div class="hero-content">
+                  <div class="kicker">Library • Study spaces • Campus</div>
+                  <h2 style="color:white; margin:0;">Common locations</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="card" style="margin-top:18px;">
+        <div class="card-h">
+          <h2>Recently added</h2>
+          <small>Latest reports</small>
+        </div>
+        <div class="card-b">
+          <div id="recentItems"></div>
+        </div>
+      </section>
+
+      <div class="footer">
+        <div class="container">© 2026 SISTC Lost &amp; Found Management System</div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
 </body>
 </html>
+
